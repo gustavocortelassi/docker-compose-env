@@ -1,0 +1,21 @@
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+      
+  - job_name: 'wordpress'
+    metrics_path: /metrics
+    static_configs:
+      - targets: ['wordpress:80']
+      
+  - job_name: 'mysql'
+    metrics_path: /metrics
+    static_configs:
+      - targets: ['db:9104'] 
+
+  - job_name: 'redis'
+    static_configs:
+      - targets: ['redis:6379']
