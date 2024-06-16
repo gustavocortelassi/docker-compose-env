@@ -7,3 +7,7 @@ Desenvolvimento de um ambiente Docker com os seguintes requisitos:
 - Ferramenta de monitoramento (Prometheus)
 
 Utilizando docker-compose.
+
+## Estrutura do Projeto
+
+1. Criação de uma pasta da área de trabalho, com o nome de 'docker compose'.
