@@ -342,3 +342,31 @@ scrape_configs:
     static_configs:
       - targets: ['redis:6379']
 ```
+# Executando o projeto
+1. Execute o comando abaixo, dessa forma, ele irá iniciar o compose e todos os containers.
+```
+docker-compose up -d
+```
+### Se tudo ocorreu como o esperado, ele irá iniciar o ambiente, que será possível observar no aplicativo do Docker Desktop, ou manualmente como faremos abaixo:
+
+## 1. Testar o MySQL
+Executar o seguinte comando no WSL:
+```
+docker exec -it dockercompose-db-1 mysql -uwordpress -p
+```
+Digite a senha: 'wordpress'
+## 2. Testar o Redis
+Executar o seguinte comando no WSL:
+```
+docker exec -it dockercompose-redis-1 redis-cli
+```
+## 3. Testar o Prometheus
+Acessar, via navegador web, o seguinte endereço:
+```
+http://localhost:9090
+```
+## 4. Testar o Wordpress
+Acessar, via navegador web, o seguinte endereço:
+```
+http://localhost:8080
+```
