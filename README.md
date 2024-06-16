@@ -8,6 +8,8 @@ Desenvolvimento de um ambiente Docker com os seguintes requisitos:
 
 Utilizando docker-compose.
 
-## Estrutura do Projeto
+## Iniciando o Projeto
 
 1. Criação de uma pasta da área de trabalho, com o nome de 'docker compose'.
+2. Criação de um arquivo, dentro da pasta, com o nome de 'docker-compose.yaml'.
+3. Criação de um arquivo, dentro da pasta, com o nome de 'prometheus.yml'.
