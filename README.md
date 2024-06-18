@@ -201,11 +201,7 @@ Define os volumes que serão utilizados e onde serão mapeados.
 ```
 - volumes:
       - prometheus_data:/prometheus
-```
-Define o comando que será executado quando iniciar o container(indica onde o prometheus vai achar suas configurações).
-```
-command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
 ```
 Seu arquivo final deve se parecer com isso:
 ```
@@ -216,10 +212,24 @@ prometheus:
       - "9090:9090"
     volumes:
       - prometheus_data:/prometheus
-    command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
 ```
-8. Configuração dos volumes:
+8. Configuração dos exportes: São utilizados para mandarem os dados para o redis conseguir fazer o gerenciamento. Enviaremos os dados do redis, e do mysql:
+```
+mysqld-exporter:
+    image: prom/mysqld-exporter
+    environment:
+      DATA_SOURCE_NAME: wordpress:wordpress@tcp(db:3306)/
+    ports:
+      - "9104:9104"
+
+  redis-exporter:
+    image: oliver006/redis_exporter
+    command: '-redis.addr redis:6379'
+    ports:
+      - "9121:9121"
+```
+9. Configuração dos volumes:
 Volumes criados para persistir dados entre os containers
 ```
 - volumes:
@@ -273,14 +283,27 @@ services:
       - "9090:9090"
     volumes:
       - prometheus_data:/prometheus
-    command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+
+  mysqld-exporter:
+    image: prom/mysqld-exporter
+    environment:
+      DATA_SOURCE_NAME: wordpress:wordpress@tcp(db:3306)/
+    ports:
+      - "9104:9104"
+
+  redis-exporter:
+    image: oliver006/redis_exporter
+    command: '-redis.addr redis:6379'
+    ports:
+      - "9121:9121"
 
 volumes:
   wordpress_data:
   db_data:
   redis_data:
   prometheus_data:
+
 
 ```
 ## Configurações do arquivo prometheus.yml.
@@ -303,22 +326,20 @@ Define o job prometheus, que irá realizar coleta do próprio servidor do promet
 Define o job wordpress, que irá realizar coleta do servico wordpress, que está rodando na porta 8080.
 ```
 - job_name: 'wordpress'
-    metrics_path: /metrics
     static_configs:
       - targets: ['wordpress:80']
 ```
 Define o job mysql, que irá realizar coleta do servico mysql, que está rodando na porta 9104.
 ```
 - job_name: 'mysql'
-    metrics_path: /metrics
     static_configs:
-      - targets: ['db:9104']
+      - targets: ['mysqld-exporter:9104']
 ```
 Define o job redis, que irá realizar coleta do servico redis, que está rodando na porta 6379.
 ```
 - job_name: 'redis'
     static_configs:
-      - targets: ['redis:6379']
+      - targets: ['redis-exporter:9121']
 ```
 Arquivo final:
 ```
@@ -329,20 +350,19 @@ scrape_configs:
   - job_name: 'prometheus'
     static_configs:
       - targets: ['localhost:9090']
-      
+
   - job_name: 'wordpress'
-    metrics_path: /metrics
     static_configs:
       - targets: ['wordpress:80']
-      
+
   - job_name: 'mysql'
-    metrics_path: /metrics
     static_configs:
-      - targets: ['db:9104'] 
+      - targets: ['mysqld-exporter:9104']
 
   - job_name: 'redis'
     static_configs:
-      - targets: ['redis:6379']
+      - targets: ['redis-exporter:9121']
+
 ```
 # Executando o projeto
 1. Execute o comando abaixo, dessa forma, ele irá iniciar o compose e todos os containers.
