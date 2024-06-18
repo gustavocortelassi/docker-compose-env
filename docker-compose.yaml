@@ -40,8 +40,20 @@ services:
       - "9090:9090"
     volumes:
       - prometheus_data:/prometheus
-    command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+
+  mysqld-exporter:
+    image: prom/mysqld-exporter
+    environment:
+      DATA_SOURCE_NAME: wordpress:wordpress@tcp(db:3306)/
+    ports:
+      - "9104:9104"
+
+  redis-exporter:
+    image: oliver006/redis_exporter
+    command: '-redis.addr redis:6379'
+    ports:
+      - "9121:9121"
 
 volumes:
   wordpress_data:
