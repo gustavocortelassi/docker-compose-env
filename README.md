@@ -1,7 +1,5 @@
 # Docker Compose Project
 
-*!!!Os arquivos do projeto se encontram na branch master!!!*
-
 Desenvolvimento de um ambiente Docker com os seguintes requisitos:
 - Aplicação web (Wordpress)
 - Banco de dados (MySQL)
